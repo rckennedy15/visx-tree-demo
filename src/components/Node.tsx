@@ -29,6 +29,9 @@ export default function Node({ node, onNodeClick }: NodeProps) {
 	if (isParent) return <ParentNode node={node} onNodeClick={onNodeClick} />;
 
 	return (
+		// eventually this will be fully customizable
+		// and the rect will just be an overlay for handling the click event
+
 		<Group top={node.x} left={node.y}>
 			<rect
 				height={height}

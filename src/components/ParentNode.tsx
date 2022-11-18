@@ -1,5 +1,5 @@
 import { Group } from '@visx/group';
-import { HierarchyNode, NodeProps } from './Node';
+import { NodeProps } from './Node';
 import { colors } from './Colors';
 
 export default function ParentNode({ node, onNodeClick }: NodeProps) {
