@@ -1,14 +1,12 @@
-import React, { useMemo } from 'react';
 import { LinearGradient } from '@visx/gradient';
-import { Group } from '@visx/group';
-import { LinkHorizontal } from '@visx/shape';
-import { Tree, hierarchy } from '@visx/hierarchy';
 import { Zoom } from '@visx/zoom';
 import { colors } from './components/Colors';
-import Node, { TreeNode } from './components/Node';
+import { TreeNode } from './components/Node';
 import { RectClipPath } from '@visx/clip-path';
 import { localPoint } from '@visx/event';
-import { ProvidedZoom } from '@visx/zoom/lib/types';
+import TreeRender from './components/TreeRender';
+import Controls from './components/Controls';
+import MiniMap from './components/MiniMap';
 
 export type TreeGraphProps = {
 	data: TreeNode;
@@ -23,10 +21,6 @@ export default function TreeGraph({
 	height,
 	margin = { top: 10, right: 80, bottom: 10, left: 80 },
 }: TreeGraphProps) {
-	const hierarchyData = useMemo(() => hierarchy(data), [data]);
-	const yMax = height - margin.top - margin.bottom;
-	const xMax = width - margin.left - margin.right;
-
 	const initialTransform = {
 		scaleX: 1,
 		scaleY: 1,
@@ -34,18 +28,6 @@ export default function TreeGraph({
 		translateY: 10,
 		skewX: 0,
 		skewY: 0,
-	};
-
-	const getZoomStringInvertWithMargins = (
-		zoom: ProvidedZoom<SVGSVGElement>
-	) => {
-		const str = zoom.toStringInvert();
-		// str format: matrix(1, 0, 0, 1, 0, 0)
-		// we want to add the margins to the last two numbers
-		const parts = str.split(',');
-		parts[4] = ` ${parseInt(parts[4]) + margin.left}`;
-		parts[5] = ` ${parseInt(parts[5]) + margin.top})`;
-		return parts.join(',');
 	};
 
 	return width < 100 ? null : (
@@ -112,133 +94,22 @@ export default function TreeGraph({
 									});
 								}}
 							/>
-							<Tree<TreeNode>
-								root={hierarchyData}
-								size={[yMax, xMax]}
-							>
-								{(tree) => (
-									<Group
-										top={margin.top}
-										left={margin.left}
-										transform={zoom.toString()}
-									>
-										{tree.links().map((link, i) => (
-											<LinkHorizontal
-												key={`link-${i}`}
-												data={link}
-												stroke={colors.lightPurple}
-												strokeWidth='1'
-												fill='none'
-											/>
-										))}
-										{tree.descendants().map((node, i) => (
-											<Node
-												key={`node-${i}`}
-												node={node}
-												onNodeClick={() => {
-													alert(
-														`clicked: ${JSON.stringify(
-															node.data.name
-														)}`
-													);
-												}}
-											/>
-										))}
-									</Group>
-								)}
-							</Tree>
-
-							<g
-								clipPath='url(#zoom-clip)'
-								transform={`
-                    scale(0.25)
-                    translate(${width * 4 - width - 60}, ${
-									height * 4 - height - 60
-								})
-                  `}
-							>
-								<rect
-									width={width}
-									height={height}
-									fill={colors.background2}
-								/>
-								<Tree<TreeNode>
-									root={hierarchyData}
-									size={[yMax, xMax]}
-								>
-									{(tree) => (
-										<Group
-											top={margin.top}
-											left={margin.left}
-										>
-											{tree.links().map((link, i) => (
-												<LinkHorizontal
-													key={`link-${i}`}
-													data={link}
-													stroke={colors.lightPurple}
-													strokeWidth='1'
-													fill='none'
-												/>
-											))}
-											{tree
-												.descendants()
-												.map((node, i) => (
-													<Node
-														key={`node-${i}`}
-														node={node}
-														onNodeClick={() => {
-															alert(
-																`clicked: ${JSON.stringify(
-																	node.data
-																		.name
-																)}`
-															);
-														}}
-													/>
-												))}
-										</Group>
-									)}
-								</Tree>
-								<rect
-									width={width}
-									height={height}
-									fill='white'
-									fillOpacity={0.2}
-									stroke='white'
-									strokeWidth={4}
-									transform={getZoomStringInvertWithMargins(
-										zoom
-									)}
-								/>
-							</g>
+							<TreeRender
+								data={data}
+								width={width}
+								height={height}
+								zoom={zoom}
+								margin={margin}
+							/>
+							<MiniMap
+								data={data}
+								width={width}
+								height={height}
+								zoom={zoom}
+								margin={margin}
+							/>
 						</svg>
-						<div className='controls'>
-							<button
-								type='button'
-								className='btn btn-zoom'
-								onClick={() =>
-									zoom.scale({ scaleX: 1.2, scaleY: 1.2 })
-								}
-							>
-								+
-							</button>
-							<button
-								type='button'
-								className='btn btn-zoom btn-bottom'
-								onClick={() =>
-									zoom.scale({ scaleX: 0.8, scaleY: 0.8 })
-								}
-							>
-								-
-							</button>
-							<button
-								type='button'
-								className='btn btn-lg'
-								onClick={zoom.reset}
-							>
-								Reset
-							</button>
-						</div>
+						<Controls zoom={zoom} />
 					</div>
 				)}
 			</Zoom>
