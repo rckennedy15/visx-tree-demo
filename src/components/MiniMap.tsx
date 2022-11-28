@@ -1,4 +1,3 @@
-import { type } from '@testing-library/user-event/dist/type';
 import { Group } from '@visx/group';
 import { ProvidedZoom } from '@visx/zoom/lib/types';
 import { colors } from './Colors';

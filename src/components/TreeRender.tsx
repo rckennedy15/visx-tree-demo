@@ -2,9 +2,9 @@ import { Group } from '@visx/group';
 import { Tree, hierarchy } from '@visx/hierarchy';
 import { LinkHorizontal } from '@visx/shape';
 import { ProvidedZoom } from '@visx/zoom/lib/types';
-import { useMemo } from 'react';
 import Node, { TreeNode } from './Node';
 import { colors } from './Colors';
+import useForceUpdate from './useForceUpdate';
 
 export type TreeRenderProps = {
 	data: TreeNode;
@@ -21,11 +21,17 @@ export default function TreeRender({
 	zoom,
 	margin = { top: 10, right: 80, bottom: 10, left: 80 },
 }: TreeRenderProps) {
-	const hierarchyData = useMemo(() => hierarchy(data), [data]);
 	const yMax = height - margin.top - margin.bottom;
 	const xMax = width - margin.left - margin.right;
+	const forceUpdate = useForceUpdate();
+
+	console.log('TreeRender - data', data);
+
 	return (
-		<Tree<TreeNode> root={hierarchyData} size={[yMax, xMax]}>
+		<Tree<TreeNode>
+			root={hierarchy(data, (d) => (d.isExpanded ? d.children : null))}
+			size={[yMax, xMax]}
+		>
 			{(tree) => (
 				<Group
 					top={margin.top}
@@ -46,9 +52,8 @@ export default function TreeRender({
 							key={`node-${i}`}
 							node={node}
 							onNodeClick={() => {
-								alert(
-									`clicked: ${JSON.stringify(node.data.name)}`
-								);
+								node.data.isExpanded = !node.data.isExpanded;
+								forceUpdate();
 							}}
 						/>
 					))}

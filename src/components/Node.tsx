@@ -7,7 +7,9 @@ import RootNode from './RootNode';
 
 export interface TreeNode {
 	name: string;
-	children?: this[];
+	children?: TreeNode[] | undefined;
+	isExpanded?: boolean | undefined;
+	_children?: TreeNode[] | undefined;
 }
 
 export type HierarchyNode = HierarchyPointNode<TreeNode>;
@@ -23,7 +25,7 @@ export default function Node({ node, onNodeClick }: NodeProps) {
 	const centerX = -width / 2;
 	const centerY = -height / 2;
 	const isRoot = node.depth === 0;
-	const isParent = !!node.children;
+	const isParent = !!node.data.children;
 
 	if (isRoot) return <RootNode node={node} onNodeClick={onNodeClick} />;
 	if (isParent) return <ParentNode node={node} onNodeClick={onNodeClick} />;
@@ -44,7 +46,8 @@ export default function Node({ node, onNodeClick }: NodeProps) {
 				strokeDasharray='2,2'
 				strokeOpacity={0.6}
 				rx={10}
-				onClick={() => onNodeClick(node)}
+				// shouldn't need onClick here since it's a leaf node
+				// onClick={() => onNodeClick(node)}
 			/>
 			<text
 				dy='.33em'

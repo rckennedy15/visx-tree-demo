@@ -4,7 +4,14 @@
 		{
 			"name": "A",
 			"children": [
-				{ "name": "A1" },
+				{
+					"name": "A1",
+					"children": [
+						{
+							"name": "X"
+						}
+					]
+				},
 				{ "name": "A2" },
 				{ "name": "A3" },
 				{

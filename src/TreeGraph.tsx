@@ -7,6 +7,7 @@ import { localPoint } from '@visx/event';
 import TreeRender from './components/TreeRender';
 import Controls from './components/Controls';
 import MiniMap from './components/MiniMap';
+import { animated } from '@react-spring/web';
 
 export type TreeGraphProps = {
 	data: TreeNode;
@@ -31,7 +32,7 @@ export default function TreeGraph({
 	};
 
 	return width < 100 ? null : (
-		<>
+		<animated.div>
 			<Zoom<SVGSVGElement>
 				width={width}
 				height={height}
@@ -159,6 +160,6 @@ export default function TreeGraph({
 					position: relative;
 				}
 			`}</style>
-		</>
+		</animated.div>
 	);
 }
