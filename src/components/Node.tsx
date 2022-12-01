@@ -2,14 +2,13 @@ import { Group } from '@visx/group';
 import { HierarchyPointNode } from '@visx/hierarchy/lib/types';
 
 import { colors } from './Colors';
-import ParentNode from './ParentNode';
-import RootNode from './RootNode';
 
 export interface TreeNode {
 	name: string;
+	amount_transferred: number;
+	lot_code: string;
 	children?: TreeNode[] | undefined;
 	isExpanded?: boolean | undefined;
-	_children?: TreeNode[] | undefined;
 }
 
 export type HierarchyNode = HierarchyPointNode<TreeNode>;
@@ -19,16 +18,79 @@ export type NodeProps = {
 	onNodeClick: (node: HierarchyNode) => void;
 };
 
+export type NodeStyle = {
+	width: number;
+	height: number;
+	fontSize: number;
+	textPadding: number;
+	fill: string;
+	stroke: string;
+	strokeWidth: number;
+	strokeDasharray: string;
+	strokeOpacity: number;
+	rx: number;
+	textColor: string;
+};
+
 export default function Node({ node, onNodeClick }: NodeProps) {
-	const width = 40;
-	const height = 20;
-	const centerX = -width / 2;
-	const centerY = -height / 2;
+	const defaultNodeStyle: NodeStyle = {
+		width: 80,
+		height: 40,
+		fontSize: 9,
+		textPadding: 3,
+		fill: colors.background,
+		stroke: colors.green,
+		strokeWidth: 1,
+		strokeDasharray: '2,2',
+		strokeOpacity: 0.6,
+		rx: 10,
+		textColor: colors.green,
+	};
+
+	const parentNodeStyle: NodeStyle = {
+		width: 80,
+		height: 40,
+		fontSize: 9,
+		textPadding: 3,
+		fill: colors.background,
+		stroke: colors.blue,
+		strokeWidth: 1,
+		strokeDasharray: '',
+		strokeOpacity: 1,
+		rx: 0,
+		textColor: colors.white,
+	};
+
+	const rootNodeStyle: NodeStyle = {
+		width: 80,
+		height: 40,
+		fontSize: 9,
+		textPadding: 3,
+		fill: "url('#main')",
+		stroke: '',
+		strokeWidth: 0,
+		strokeDasharray: '',
+		strokeOpacity: 0,
+		rx: 10,
+		textColor: colors.background,
+	};
+
+	let nodeStyle = defaultNodeStyle;
+
 	const isRoot = node.depth === 0;
 	const isParent = !!node.data.children;
 
-	if (isRoot) return <RootNode node={node} onNodeClick={onNodeClick} />;
-	if (isParent) return <ParentNode node={node} onNodeClick={onNodeClick} />;
+	// if (isRoot) return <RootNode node={node} onNodeClick={onNodeClick} />;
+	// if (isParent) return <ParentNode node={node} onNodeClick={onNodeClick} />;
+	if (isParent) {
+		nodeStyle = parentNodeStyle;
+	}
+	if (isRoot) {
+		nodeStyle = rootNodeStyle;
+	}
+
+	const centerX = -nodeStyle.width / 2;
+	const centerY = -nodeStyle.height / 2;
 
 	return (
 		// eventually this will be fully customizable
@@ -36,28 +98,60 @@ export default function Node({ node, onNodeClick }: NodeProps) {
 
 		<Group top={node.x} left={node.y}>
 			<rect
-				height={height}
-				width={width}
+				height={nodeStyle.height}
+				width={nodeStyle.width}
 				y={centerY}
 				x={centerX}
-				fill={colors.background}
-				stroke={colors.green}
-				strokeWidth={1}
-				strokeDasharray='2,2'
-				strokeOpacity={0.6}
-				rx={10}
+				fill={nodeStyle.fill}
+				stroke={nodeStyle.stroke}
+				strokeWidth={nodeStyle.strokeWidth}
+				strokeDasharray={nodeStyle.strokeDasharray}
+				strokeOpacity={nodeStyle.strokeOpacity}
+				rx={nodeStyle.rx}
 				// shouldn't need onClick here since it's a leaf node
-				// onClick={() => onNodeClick(node)}
+				onClick={() => onNodeClick(node)}
 			/>
 			<text
-				dy='.33em'
-				fontSize={9}
+				x={-(nodeStyle.width / 2 - 5)}
+				y={
+					-(nodeStyle.height / 3 - nodeStyle.fontSize * 0.75) -
+					nodeStyle.textPadding +
+					(nodeStyle.fontSize * 0.75) / 2
+				}
+				fontSize={nodeStyle.fontSize}
 				fontFamily='Arial'
-				textAnchor='middle'
-				fill={colors.green}
+				textAnchor='start'
+				fill={nodeStyle.textColor}
 				style={{ pointerEvents: 'none' }}
 			>
-				{node.data.name}
+				Name: {node.data.name}
+			</text>
+			<text
+				x={-(nodeStyle.width / 2 - 5)}
+				y={0 + (nodeStyle.fontSize * 0.75) / 2}
+				fontSize={nodeStyle.fontSize}
+				fontFamily='Arial'
+				textAnchor='start'
+				fill={nodeStyle.textColor}
+				style={{ pointerEvents: 'none' }}
+			>
+				Transferred: {node.data.amount_transferred}
+			</text>
+			<text
+				x={-(nodeStyle.width / 2 - 5)}
+				y={
+					nodeStyle.height / 3 -
+					nodeStyle.fontSize * 0.75 +
+					nodeStyle.textPadding +
+					(nodeStyle.fontSize * 0.75) / 2
+				}
+				fontSize={nodeStyle.fontSize}
+				fontFamily='Arial'
+				textAnchor='start'
+				fill={nodeStyle.textColor}
+				style={{ pointerEvents: 'none' }}
+			>
+				Lot Code: {node.data.lot_code}
 			</text>
 		</Group>
 	);

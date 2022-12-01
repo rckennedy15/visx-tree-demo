@@ -1,36 +1,64 @@
 {
 	"name": "T",
+	"amount_transferred": 100,
+	"lot_code": "39204",
 	"children": [
 		{
 			"name": "A",
+			"amount_transferred": 100,
+			"lot_code": "39204",
 			"children": [
 				{
 					"name": "A1",
+					"amount_transferred": 100,
+					"lot_code": "39204",
 					"children": [
 						{
-							"name": "X"
+							"name": "X",
+							"amount_transferred": 100,
+							"lot_code": "39204"
 						}
 					]
 				},
-				{ "name": "A2" },
-				{ "name": "A3" },
+				{
+					"name": "A2",
+					"amount_transferred": 100,
+					"lot_code": "39204"
+				},
+				{
+					"name": "A3",
+					"amount_transferred": 100,
+					"lot_code": "39204"
+				},
 				{
 					"name": "C",
+					"amount_transferred": 100,
+					"lot_code": "39204",
 					"children": [
 						{
-							"name": "C1"
+							"name": "C1",
+							"amount_transferred": 100,
+							"lot_code": "39204"
 						},
 						{
 							"name": "D",
+							"amount_transferred": 100,
+							"lot_code": "39204",
 							"children": [
 								{
-									"name": "D1"
+									"name": "D1",
+									"amount_transferred": 100,
+									"lot_code": "39204"
 								},
 								{
-									"name": "D2"
+									"name": "D2",
+									"amount_transferred": 100,
+									"lot_code": "39204"
 								},
 								{
-									"name": "D3"
+									"name": "D3",
+									"amount_transferred": 100,
+									"lot_code": "39204"
 								}
 							]
 						}
@@ -38,10 +66,28 @@
 				}
 			]
 		},
-		{ "name": "Z" },
+		{ "name": "Z", "amount_transferred": 100, "lot_code": "39204" },
 		{
 			"name": "B",
-			"children": [{ "name": "B1" }, { "name": "B2" }, { "name": "B3" }]
+			"amount_transferred": 100,
+			"lot_code": "39204",
+			"children": [
+				{
+					"name": "B1",
+					"amount_transferred": 100,
+					"lot_code": "39204"
+				},
+				{
+					"name": "B2",
+					"amount_transferred": 100,
+					"lot_code": "39204"
+				},
+				{
+					"name": "B3",
+					"amount_transferred": 100,
+					"lot_code": "39204"
+				}
+			]
 		}
 	]
 }
